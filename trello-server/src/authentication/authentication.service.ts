@@ -35,7 +35,7 @@ export class AuthenticationService {
     const payload:TokenData = {id:user.id}
     const token = await this.jwtService.signAsync(payload)
 
-    return JSON.stringify(token);
+    return { token };
   }
   async signUp(signUp: CreateUserDto) {
     const userExist = await this.userRepository.count({
@@ -55,7 +55,7 @@ export class AuthenticationService {
 
     const user = new User({...signUp, password:hash})
     await this.userRepository.save(user)
-    return JSON.stringify("Пользователь зарегистрирован");
+    return "Пользователь зарегистрирован";
   }
 
   async getMe(tokenData: TokenData) {
