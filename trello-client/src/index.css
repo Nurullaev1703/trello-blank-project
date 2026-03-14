@@ -30,6 +30,8 @@
   --color-muted: oklch(0.24 0.03 285);
   --color-muted-foreground: oklch(0.65 0.03 285);
 
+  --font-sans: "Roboto Slab", serif;
+
   --radius-lg: 1rem;
   --radius-md: 0.75rem;
   --radius-sm: 0.5rem;
