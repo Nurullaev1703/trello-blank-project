@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: oklch(0.6 0.25 260);
-  --color-primary-foreground: oklch(0.98 0.01 260);
+  --color-primary: oklch(0.58 0.23 285);
+  --color-primary-foreground: oklch(0.99 0.01 285);
   
-  --color-secondary: oklch(0.3 0.05 260);
-  --color-secondary-foreground: oklch(0.9 0.02 260);
+  --color-secondary: oklch(0.28 0.08 285);
+  --color-secondary-foreground: oklch(0.92 0.02 285);
   
   --color-accent: oklch(0.7 0.2 310);
   --color-accent-foreground: oklch(0.98 0.01 310);
@@ -14,21 +14,21 @@
   --color-error: oklch(0.6 0.25 20);
   --color-warning: oklch(0.8 0.15 80);
   
-  --color-background: #202020;
-  --color-foreground: oklch(0.95 0.01 260);
+  --color-background: oklch(0.14 0.02 285);
+  --color-foreground: oklch(0.95 0.01 285);
   
-  --color-card: oklch(0.18 0.02 260);
-  --color-card-foreground: oklch(0.95 0.01 260);
+  --color-card: oklch(0.18 0.03 285);
+  --color-card-foreground: oklch(0.95 0.01 285);
   
-  --color-popover: oklch(0.18 0.02 260);
-  --color-popover-foreground: oklch(0.95 0.01 260);
+  --color-popover: oklch(0.18 0.03 285);
+  --color-popover-foreground: oklch(0.95 0.01 285);
   
-  --color-border: oklch(0.28 0.02 260);
-  --color-input: oklch(0.23 0.02 260);
-  --color-ring: oklch(0.6 0.25 260);
+  --color-border: oklch(0.26 0.03 285);
+  --color-input: oklch(0.22 0.03 285);
+  --color-ring: oklch(0.58 0.23 285);
 
-  --color-muted: oklch(0.25 0.02 260);
-  --color-muted-foreground: oklch(0.7 0.02 260);
+  --color-muted: oklch(0.24 0.03 285);
+  --color-muted-foreground: oklch(0.65 0.03 285);
 
   --radius-lg: 1rem;
   --radius-md: 0.75rem;
@@ -53,6 +53,9 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+  }
+  button, input[type="button"], input[type="submit"], a {
+    @apply cursor-pointer;
   }
 }
 

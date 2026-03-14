@@ -6,11 +6,11 @@ import { Role } from "src/projects/entities/role.entity";
 
 @Entity()
 export class User extends AbstractEntity<User> {
-    @Column({name: "first_name"})
-    firstName:string
+    @Column({ name: "first_name", nullable: true })
+    firstName?: string;
 
-    @Column({name: "last_name"})
-    lastName:string
+    @Column({ name: "last_name", nullable: true })
+    lastName?: string;
 
     @Column()
     email:string

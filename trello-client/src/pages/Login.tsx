@@ -18,7 +18,7 @@ export const Login: FC = () => {
   return (
     <div className='flex min-h-screen items-center justify-center'>
         <form className='flex flex-col gap-4 rounded-2xl p-4 border border-gray-200 w-96 bg-white/10' onSubmit={handleSubmit(data => console.log(data))}>
-            <h1 className='text-2xl font-bold text-center'>Login</h1>
+            <h1 className='text-3xl font-bold text-center'>Login</h1>
             <Controller
                 name='username'
                 control={control}
@@ -54,7 +54,7 @@ export const Login: FC = () => {
                         <button
                             type='button'
                             onClick={() => setShowPassword(!showPassword)}
-                            className='absolute p-2.5 right-0 top-0 hover:bg-white/10 rounded-r-xl'
+                            className='absolute p-3 right-0 top-0 hover:bg-white/10 rounded-r-xl'
                         >
                             {showPassword ? <EyeOff size={20}/> : <Eye size={20}/>}
                         </button>

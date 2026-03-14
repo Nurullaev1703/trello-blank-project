@@ -9,11 +9,11 @@ const inputVariants = cva(
     variants: {
       variant: {
         outlined: 
-          "bg-background/50 border border-input focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary px-4 py-2.5 shadow-sm h-10",
+          "bg-background/50 border border-input focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:border-primary px-4 py-3 shadow-sm h-11",
         filled: 
           "bg-secondary/30 border-b-2 border-transparent hover:bg-secondary/50 focus-visible:bg-secondary/70 focus-visible:border-primary px-4 py-3 rounded-b-none shadow-inner h-11",
         standard: 
-          "bg-transparent border-b-2 border-input rounded-none px-0 py-2.5 focus-visible:border-primary transition-[border-color] h-10",
+          "bg-transparent border-b-2 border-input rounded-none px-0 py-3 focus-visible:border-primary transition-[border-color] h-11",
       },
       isError: {
         true: "!border-error focus-visible:ring-error/20 focus-visible:border-error text-error",
