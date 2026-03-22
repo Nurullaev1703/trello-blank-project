@@ -70,3 +70,15 @@
     @apply bg-black/20 backdrop-blur-md border border-white/10;
   }
 }
+/* Для Chrome, Edge, Safari */
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* Для Firefox (у него крестика нет, но можно сбросить стили) */
+input[type="search"] {
+    -moz-appearance: textfield;
+}
+
+
