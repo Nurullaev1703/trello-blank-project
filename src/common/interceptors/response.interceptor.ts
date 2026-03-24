@@ -21,11 +21,16 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     next: CallHandler,
   ): Observable<Response<T>> {
     return next.handle().pipe(
-      map((data) => ({
-        statusCode: context.switchToHttp().getResponse().statusCode || HttpStatus.OK,
-        message: data?.message || 'Success',
-        data: data?.data || data,
-      })),
+      map((data) => {
+        const message = typeof data === 'string' ? data : data?.message || 'Success';
+        const resultData = data?.data !== undefined ? data.data : (data?.message ? (Object.keys(data).length > 1 ? (({message: _m, ...rest}) => rest)(data) : null) : data);
+        
+        return {
+          statusCode: context.switchToHttp().getResponse().statusCode || HttpStatus.OK,
+          message: message,
+          data: resultData === data && typeof data === 'string' ? null : resultData,
+        };
+      }),
     );
   }
 }

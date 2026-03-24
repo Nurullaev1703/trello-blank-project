@@ -37,7 +37,7 @@ export class ProjectsService {
       project,
       role: RolesProject.admin
     })
-    return JSON.stringify("Проект создан")
+    return "Project created"
   }
 
   async findAll(tokenData: TokenData) {
@@ -114,7 +114,7 @@ export class ProjectsService {
 
     if(user.role !== RolesProject.admin){
       throw new HttpException(
-        "У вас недостаточно прав, чтобы добавлять пользователей в проект",
+        "Insufficient permissions to add members to this project",
         HttpStatus.CONFLICT
       )
     }
@@ -137,7 +137,7 @@ export class ProjectsService {
       project: project
     })
 
-    return `Пользователь ${dto.username} добавлен`
+    return `User ${dto.username} added successfully`
   }
   async update(projectId:string, updateProjectDto:UpdateProjectDto){
     if(updateProjectDto.name){
@@ -173,6 +173,6 @@ export class ProjectsService {
       })
     }
 
-    return JSON.stringify("Проект обновлен")
+    return "Project updated"
   }
 }

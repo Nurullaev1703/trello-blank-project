@@ -42,7 +42,7 @@ export class TasksService {
 
     await this.taskRepository.save({...task, status: TaskStatus.create})
 
-    return 'Задача добавлена в проект';
+    return 'Task added to project';
   }
 
   async findAll(filters: GetTasksFilterDto, tokenData?: TokenData) {
@@ -74,11 +74,11 @@ export class TasksService {
   async update(id: string, updateTaskDto: UpdateTaskDto) {
     const task = new Task(updateTaskDto);
     await this.taskRepository.save({ id, ...task });
-    return 'Задача обновлена';
+    return 'Task updated';
   }
 
   async remove(id: string) {
     await this.taskRepository.delete({ id });
-    return 'Задача удалена';
+    return 'Task deleted';
   }
 }

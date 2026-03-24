@@ -23,13 +23,13 @@ export class AuthenticationService {
     })
 
     if(!user){
-      throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND)
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND)
     }
     
     const isMatch = await bcrypt.compare(signInDto.password, user.password)
 
     if(!isMatch){
-      throw new HttpException('Некорректный пароль', HttpStatus.UNAUTHORIZED)
+      throw new HttpException('Invalid password', HttpStatus.UNAUTHORIZED)
     }
 
     const payload:TokenData = {id:user.id}
@@ -45,7 +45,7 @@ export class AuthenticationService {
     })
     if(userExist) {
       throw new HttpException(
-        'Пользователь с таким логином уже существует',
+        'Username already exists',
         HttpStatus.CONFLICT
       )
     }
@@ -55,7 +55,7 @@ export class AuthenticationService {
 
     const user = new User({...signUp, password:hash})
     await this.userRepository.save(user)
-    return "Пользователь зарегистрирован";
+    return "User successfully registered";
   }
 
   async getMe(tokenData: TokenData) {
@@ -64,7 +64,7 @@ export class AuthenticationService {
     });
     
     if (!user) {
-      throw new HttpException('Пользователь не найден', HttpStatus.NOT_FOUND);
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
