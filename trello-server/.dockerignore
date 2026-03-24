@@ -6,4 +6,3 @@ dist
 README.md
 Dockerfile
 docker-compose*.yaml
-.env
