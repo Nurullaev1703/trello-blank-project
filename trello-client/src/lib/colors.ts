@@ -1,4 +1,4 @@
-// перечисление цветовых решений приложения
+// Application color palette
 export const COLORS = {
   "dark-blue": "#035F7C",
   "primary-blue": "#0A7D9E",

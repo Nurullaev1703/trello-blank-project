@@ -1,7 +1,7 @@
 import { API_URL } from "@/lib/api";
 import { FC, useEffect, useRef, useState } from "react";
 import Slider from "react-slick";
-import { AlertCircle } from "lucide-react";
+import { WarningCircleIcon } from "@phosphor-icons/react";
 
 export interface CarouselItem {
   index: number;
@@ -25,16 +25,16 @@ export const Carousel: FC<Props> = ({
   radius = "rounded-2xl",
   hasDelete,
 }) => {
-  // Создаем реф с типом Slider
+  // Create a ref typed as Slider
   const sliderRef = useRef<Slider | null>(null);
 
   useEffect(() => {
     if (sliderRef.current) {
-      const slickList = (sliderRef.current as any).innerSlider.list; // Используем any для доступа к внутренним свойствам
+      const slickList = (sliderRef.current as any).innerSlider.list; // Using any to access internal Slider properties
       const firstSlide = slickList.querySelector(".slick-slide");
 
       if (firstSlide) {
-        // Устанавливаем высоту slick-list в зависимости от высоты первого слайда
+        // Set slick-list height based on the first slide height
         if (height) {
           slickList.classList.add(height);
         }
@@ -44,7 +44,7 @@ export const Carousel: FC<Props> = ({
       }
     }
   }, []);
-  // Если нет изображений, добавляем заглушку
+  // Fall back to a placeholder if no images are provided
   const displayedItems =
     items.length > 0
       ? items.map((item) => ({
@@ -56,10 +56,10 @@ export const Carousel: FC<Props> = ({
         }))
       : [{ index: 0, imgUrl: "" }];
   const [activeIndex, setActiveIndex] = useState<number>(currentItemId);
-  // Отключаем бесконечную прокрутку, если изображение только одно
+  // Disable infinite scroll when there is only one image
   const settings = {
     dots: displayedItems.length > 1,
-    infinite: displayedItems.length > 1, // Только если больше одной картинки
+    infinite: displayedItems.length > 1, // Only when more than one image
     speed: 600,
     slidesToShow: 1,
     slidesToScroll: 1,
@@ -95,7 +95,10 @@ export const Carousel: FC<Props> = ({
             />
           ) : (
             <div className="flex items-center justify-center w-full h-full bg-light-gray">
-              <AlertCircle className="w-12 h-12 text-primary-blue" />
+              <WarningCircleIcon
+                className="w-12 h-12 text-primary-blue"
+                weight="duotone"
+              />
             </div>
           )}
         </div>

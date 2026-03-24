@@ -1,23 +1,23 @@
 const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-// Данные необходимые для запроса
+// Request configuration
 interface RequestOptions {
   url: string;
   dto?: unknown;
   headers?: HeadersInit;
 }
-// Данные, которые приходят в результате запроса
+// Response shape returned from server
 interface RequestResponse<T> extends Pick<Response, "status"> {
   data: T;
 }
-// Типы запросов, которые отправляются на сервер
+// Supported HTTP methods
 type RequestMethod = "GET" | "POST" | "UPDATE" | "DELETE" | "PATCH";
 
 class ApiService {
-  // данные по умолчанию для ссылки и токена
+  // Bearer token storage
   bearerToken: Record<string, string> = {};
 
-  // проверяет на какую точку отправлен запрос
+  // Determines the full URL for the request
   private _checkNewUrl(url: string) {
     if (url.includes("http://") || url.includes("https://")) {
       return url;
@@ -25,7 +25,7 @@ class ApiService {
     return baseUrl + url;
   }
 
-  // Проверка необходимости отправки токена
+  // Decides whether to attach the bearer token
   private _checkBearerNecessity(url: string) {
     if (url.includes("http://") || url.includes("https://")) {
       return null;
@@ -33,7 +33,7 @@ class ApiService {
     return this.bearerToken;
   }
 
-  // стандартный запрос на сервер
+  // Core request method
   private async _serverRequest<T>(
     options: RequestOptions,
     method: RequestMethod
@@ -56,7 +56,7 @@ class ApiService {
     });
   }
 
-  // методы для получения данных
+  // HTTP method helpers
   async get<T>(options: RequestOptions) {
     return this._serverRequest<T>(options, "GET");
   }
@@ -70,12 +70,12 @@ class ApiService {
     return this._serverRequest<T>(options, "DELETE");
   }
 
-  // сохранение токена для отправки на запросы
+  // Stores the bearer token for authenticated requests
   saveBearerToken(token: string) {
     this.bearerToken = { Authorization: `Bearer ${token}` };
   }
 
-  // удаление токена из класса
+  // Clears the stored bearer token
   deleteBearerToken() {
     this.bearerToken = {};
   }

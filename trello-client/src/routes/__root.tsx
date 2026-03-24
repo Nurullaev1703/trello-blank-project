@@ -3,7 +3,7 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import { ToastContainer } from "@/components/ui/ToastContainer";
 import { Header } from "@/components/Header";
 
-const AUTH_ROUTES = ["/auth", "/register"]
+const AUTH_ROUTES = ["/auth", "/register", "/auth/register"]
 
 const RootComponent = () => {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

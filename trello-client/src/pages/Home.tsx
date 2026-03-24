@@ -3,7 +3,13 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Rocket, Send, Bell, CheckCircle2, AlertCircle } from "lucide-react";
+import {
+  RocketIcon,
+  PaperPlaneTiltIcon,
+  BellIcon,
+  CheckCircleIcon,
+  WarningCircleIcon,
+} from "@phosphor-icons/react";
 
 interface FormValues {
   email: string;
@@ -12,8 +18,12 @@ interface FormValues {
 export const Home: React.FC = () => {
   const { toast, success, error, warning } = useToast();
   const [inputValue, setInputValue] = useState("");
-  
-  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormValues>();
 
   const onSubmit = (data: FormValues) => {
     success(`Submitted: ${data.email}`);
@@ -27,7 +37,8 @@ export const Home: React.FC = () => {
           Modern React Template
         </h1>
         <p className="text-xl text-muted-foreground max-w-[600px] mx-auto">
-          A premium starting point with Tailwind v4, TanStack Router/Query, and custom UI components.
+          A premium starting point with Tailwind v4, TanStack Router/Query, and
+          custom UI components.
         </p>
       </section>
 
@@ -36,13 +47,16 @@ export const Home: React.FC = () => {
         {/* Buttons Demo */}
         <section className="glass-dark p-6 rounded-xl space-y-6">
           <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <Rocket className="text-primary" /> Buttons (CVA)
+            <RocketIcon className="text-primary" weight="fill" /> Buttons (CVA)
           </h2>
           <div className="flex flex-wrap gap-4">
             <Button onClick={() => success("Primary action successful!")}>
               Primary
             </Button>
-            <Button variant="secondary" onClick={() => toast("Secondary clicked")}>
+            <Button
+              variant="secondary"
+              onClick={() => toast("Secondary clicked")}
+            >
               Secondary
             </Button>
             <Button variant="outline" onClick={() => toast("Outline clicked")}>
@@ -51,7 +65,10 @@ export const Home: React.FC = () => {
             <Button variant="ghost" onClick={() => toast("Ghost hover")}>
               Ghost
             </Button>
-            <Button variant="danger" onClick={() => error("Something went wrong!")}>
+            <Button
+              variant="danger"
+              onClick={() => error("Something went wrong!")}
+            >
               Danger
             </Button>
           </div>
@@ -60,7 +77,7 @@ export const Home: React.FC = () => {
             <Button size="md">Medium</Button>
             <Button size="lg">Large</Button>
             <Button size="icon">
-              <Send />
+              <PaperPlaneTiltIcon weight="fill" />
             </Button>
           </div>
         </section>
@@ -68,7 +85,7 @@ export const Home: React.FC = () => {
         {/* Inputs & Form Demo */}
         <section className="glass-dark p-6 rounded-xl space-y-6">
           <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <Bell className="text-accent" /> Inputs & Form
+            <BellIcon className="text-accent" weight="duotone" /> Inputs & Form
           </h2>
           <div className="space-y-6">
             <div className="grid gap-4">
@@ -98,23 +115,27 @@ export const Home: React.FC = () => {
                 error="This field has an error message"
               />
             </div>
-            
+
             <div className="pt-4 border-t border-border/50">
-              <p className="text-sm font-medium mb-4 text-primary">React Hook Form Integration Demo</p>
+              <p className="text-sm font-medium mb-4 text-primary">
+                React Hook Form Integration Demo
+              </p>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <Input
                   label="Email"
                   placeholder="enter your email"
-                  {...register("email", { 
-                    required: "Email is required", 
+                  {...register("email", {
+                    required: "Email is required",
                     pattern: {
                       value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: "Invalid email address"
-                    }
+                      message: "Invalid email address",
+                    },
                   })}
                   error={errors.email?.message}
                 />
-                <Button type="submit" className="w-full">Submit Form</Button>
+                <Button type="submit" className="w-full">
+                  Submit Form
+                </Button>
               </form>
             </div>
           </div>
@@ -124,14 +145,35 @@ export const Home: React.FC = () => {
       {/* Feature Grid */}
       <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {[
-          { title: "Tailwind CSS v4", desc: "Native @theme support and OKLCH colors." },
-          { title: "TanStack Stack", desc: "Type-safe routing and data fetching." },
-          { title: "Lucide Icons", desc: "Beautifully simple pixel-perfect icons." },
-          { title: "CVA Components", desc: "Easily extensible variant-based UI." },
-          { title: "Toast System", desc: "Global notification context and hooks." },
-          { title: "Glassmorphism", desc: "Modern semi-transparent UI utilities." },
+          {
+            title: "Tailwind CSS v4",
+            desc: "Native @theme support and OKLCH colors.",
+          },
+          {
+            title: "TanStack Stack",
+            desc: "Type-safe routing and data fetching.",
+          },
+          {
+            title: "Phosphor Icons",
+            desc: "Beautifully flexible icons with fill, duotone, bold and more.",
+          },
+          {
+            title: "CVA Components",
+            desc: "Easily extensible variant-based UI.",
+          },
+          {
+            title: "Toast System",
+            desc: "Global notification context and hooks.",
+          },
+          {
+            title: "Glassmorphism",
+            desc: "Modern semi-transparent UI utilities.",
+          },
         ].map((feat, i) => (
-          <div key={i} className="border rounded-lg p-4 hover:border-primary/50 transition-colors">
+          <div
+            key={i}
+            className="border rounded-lg p-4 hover:border-primary/50 transition-colors"
+          >
             <h3 className="font-bold mb-1">{feat.title}</h3>
             <p className="text-sm text-muted-foreground">{feat.desc}</p>
           </div>

@@ -6,7 +6,7 @@ import { routeTree } from "@/routeTree.gen";
 import { NotFound } from "@/pages/NotFound";
 import "@/index.css";
 
-// Создаем клиент React Query
+// Initialize React Query client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
