@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { authService } from "@/services/authService";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   EyeIcon,
@@ -13,6 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import { useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { apiService } from "@/services/apiService";
 
 interface FormTypes {
   username: string;
@@ -30,13 +30,12 @@ export const Register: FC = () => {
   const onSubmit = async (data: FormTypes) => {
     setIsLoading(true);
     try {
-      const response = await authService.register({
-        username: data.username,
-        email: data.email,
-        password: data.password,
+      const response = await apiService.post({
+        url: "/v1/auth/signup",
+        dto: data
       });
 
-      if (response.status === 201) {
+      if (response.statusCode === 201) {
         success("Account created successfully! Please sign in.");
         navigate({ to: "/auth" });
       } else {

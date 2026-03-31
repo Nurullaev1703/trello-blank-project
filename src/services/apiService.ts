@@ -1,5 +1,5 @@
 const baseUrl =
-  import.meta.env.VITE_API_URL || "https://trello-blank-project.onrender.com";
+  import.meta.env.VITE_API_URL || "https://trello-blank-project.onrender.com/api";
 
 // Request configuration
 interface RequestOptions {
@@ -8,8 +8,10 @@ interface RequestOptions {
   headers?: HeadersInit;
 }
 // Response shape returned from server
-interface RequestResponse<T> extends Pick<Response, "status"> {
+interface RequestResponse<T> {
   data: T;
+  statusCode: number,
+  message: string
 }
 // Supported HTTP methods
 type RequestMethod = "GET" | "POST" | "UPDATE" | "DELETE" | "PATCH";
@@ -48,12 +50,9 @@ class ApiService {
         ...this._checkBearerNecessity(options.url),
       },
     }).then(async (response) => {
-      const data = await response.json();
+      const data:RequestResponse<T> = await response.json();
 
-      return {
-        status: response.status,
-        data,
-      };
+      return data
     });
   }
 
