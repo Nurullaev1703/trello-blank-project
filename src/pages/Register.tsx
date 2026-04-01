@@ -20,9 +20,6 @@ interface FormTypes {
   password: string;
 }
 
-
-
-
 export const Register: FC = () => {
   const { control, handleSubmit } = useForm<FormTypes>();
   const [showPassword, setShowPassword] = useState(false);
