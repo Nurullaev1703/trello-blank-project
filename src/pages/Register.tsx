@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { authService } from "@/services/authService";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   EyeIcon,
@@ -29,26 +30,18 @@ export const Register: FC = () => {
 
   const onSubmit = async (data: FormTypes) => {
     setIsLoading(true);
-    try {
-      const response = await apiService.post({
-        url: "/v1/auth/signup",
-        dto: data
-      });
-
-      if (response.statusCode === 201) {
-        success("Account created successfully! Please sign in.");
-        navigate({ to: "/auth" });
-      } else {
-        const message =
-          (response.data as { message?: string })?.message ||
-          "Registration failed";
-        error(typeof message === "string" ? message : "Registration failed");
-      }
-    } catch {
-      error("Could not connect to the server");
-    } finally {
-      setIsLoading(false);
+    const response = await apiService.post({
+      url: "/v1/auth/signup",
+      dto: data
+    });  
+    if (response.statusCode !== 201) {
+      error(response.message)
     }
+    else {
+      success(response.message)
+      navigate({to:"/auth"})
+    }
+    setIsLoading(false)
   };
 
   return (

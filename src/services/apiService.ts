@@ -1,3 +1,5 @@
+import { tokenStorage } from "./storageService";
+
 const baseUrl =
   import.meta.env.VITE_API_URL || "https://trello-blank-project.onrender.com/api";
 
@@ -8,17 +10,18 @@ interface RequestOptions {
   headers?: HeadersInit;
 }
 // Response shape returned from server
-interface RequestResponse<T> {
-  data: T;
-  statusCode: number,
+interface RequestResponse<T>{
+  statusCode: number;
   message: string
+  data: T;
 }
+
 // Supported HTTP methods
 type RequestMethod = "GET" | "POST" | "UPDATE" | "DELETE" | "PATCH";
 
 class ApiService {
   // Bearer token storage
-  bearerToken: Record<string, string> = {};
+  bearerToken:Record<string, string> = tokenStorage.hasValue() ? {"Authorization": `Bearer ${tokenStorage.getValue()}`} : {};
 
   // Determines the full URL for the request
   private _checkNewUrl(url: string) {
@@ -50,7 +53,7 @@ class ApiService {
         ...this._checkBearerNecessity(options.url),
       },
     }).then(async (response) => {
-      const data:RequestResponse<T> = await response.json();
+      const data: RequestResponse<T> = await response.json();
 
       return data
     });
@@ -82,3 +85,7 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
+
+
+
+

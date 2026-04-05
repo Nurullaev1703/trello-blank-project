@@ -10,6 +10,9 @@ import {
 } from "@phosphor-icons/react";
 import { useState, type FC } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { apiService } from "@/services/apiService";
+import { useToast } from "@/hooks/use-toast";
+import { tokenStorage } from "@/services/storageService";
 
 interface FormTypes {
   username: string;
@@ -17,14 +20,30 @@ interface FormTypes {
 }
 
 export const Login: FC = () => {
-  const { control, handleSubmit } = useForm<FormTypes>();
+  const { control, handleSubmit, formState:{isSubmitting} } = useForm<FormTypes>();
   const [showPassword, setShowPassword] = useState(false);
+  const { success, error } = useToast()
+  
+
+  const login = async (data: FormTypes) => {
+    const response = await apiService.post<{token:string}>({
+      url: "/v1/auth/login",
+      dto: data
+    })
+    if (response.statusCode === 201) {
+      success(response.message)
+      tokenStorage.setValue(response.data.token)
+    }
+    else {
+      error(response.message)
+    }
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center">
       <form
         className="flex flex-col gap-5 rounded-2xl p-6 border border-gray-200 w-96 bg-white/10 shadow-lg"
-        onSubmit={handleSubmit((data) => console.log(data))}
+        onSubmit={handleSubmit(login)}
       >
         {/* Header */}
         <div className="flex flex-col items-center gap-2 mb-1">
@@ -43,8 +62,13 @@ export const Login: FC = () => {
           control={control}
           rules={{
             required: "This field is required",
-            validate: (value) =>
-              value.length > 4 || "Username must be more than 4 characters",
+            validate: (value) => {
+              const regex = /^[A-Za-z]+$/
+              if(value.length < 4)
+                return "Username must be more than 4 characters";
+              else if (!regex.test(value))
+                return "Username contains only letters";
+            }
           }}
           render={({ field, fieldState: { error } }) => (
             <div className="relative">
@@ -113,8 +137,8 @@ export const Login: FC = () => {
           )}
         />
 
-        <Button type="submit" className="w-full mt-1">
-          Sign In
+        <Button type="submit" className="w-full mt-1" disabled={isSubmitting}>
+          {isSubmitting ? "Waiting sign in" : "Sign In" }
         </Button>
 
         <p className="text-sm text-center text-muted-foreground">

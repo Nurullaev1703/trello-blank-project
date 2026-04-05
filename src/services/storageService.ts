@@ -1,3 +1,5 @@
+import { User } from "@/types/user";
+
 export class StorageService<T> {
   private readonly KEY_STORAGE: string;
 
@@ -42,3 +44,6 @@ export class StorageService<T> {
     localStorage.removeItem(this.KEY_STORAGE);
   }
 }
+
+export const tokenStorage = new StorageService<string>("TOKEN")
+export const userStorage = new StorageService<User>("USER")
