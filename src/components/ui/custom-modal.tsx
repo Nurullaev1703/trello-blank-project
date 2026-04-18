@@ -48,47 +48,43 @@ export const CustomModal: React.FC<CustomModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-light-gray/80 animate-in fade-in-0 custom-modal-overlay"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in-0"
         onClick={onClose}
       />
 
       {/* Modal Content */}
       <div
         className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border border-primary-gray bg-white p-0 shadow-lg duration-200 animate-in fade-in-0 zoom-in-95 slide-in-from-left-1/2 slide-in-from-top-[48%] sm:rounded-xl",
-          "max-w-[calc(100%-32px)] max-h-screen rounded-xl flex flex-col custom-modal-content",
+          "relative z-50 w-full max-w-md overflow-hidden rounded-2xl border border-white/20 bg-card/90 backdrop-blur-xl shadow-2xl duration-200 animate-in fade-in-0 zoom-in-95",
           className,
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Scrollable Content */}
-        <div className="flex flex-col flex-1 h-full max-h-screen overflow-y-auto custom-modal-scrollable p-4">
-          {/* Header */}
-          <div className="flex flex-col space-y-1.5 text-center sm:text-left mb-4 px-2">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold leading-none tracking-tight text-primary-blue">
-                {title}
-              </h2>
-              <button
-                onClick={onClose}
-                className="rounded-xl opacity-70 ring-offset-light-gray transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-dark-blue focus:ring-offset-2 w-11 h-11 flex items-center justify-center"
-              >
-                <XIcon className="h-4 w-4 text-dark-gray" weight="bold" />
-                <span className="sr-only">Close</span>
-              </button>
-            </div>
-            {description && (
-              <p className="text-sm text-primary-gray">{description}</p>
-            )}
+        {/* Header */}
+        <div className="p-6 pb-2">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-xl font-bold text-foreground">
+              {title}
+            </h2>
+            <button
+              onClick={onClose}
+              className="rounded-full opacity-70 transition-opacity hover:opacity-100 focus:outline-none w-8 h-8 flex items-center justify-center hover:bg-white/10"
+            >
+              <XIcon className="h-5 w-5 text-foreground" weight="bold" />
+              <span className="sr-only">Close</span>
+            </button>
           </div>
+          {description && (
+            <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+          )}
+        </div>
 
-          {/* Content */}
-          <div className="flex-1 overflow-y-auto custom-modal-scrollable px-2">
-            {children}
-          </div>
+        {/* Content */}
+        <div className="p-6 pt-2">
+          {children}
         </div>
       </div>
     </div>

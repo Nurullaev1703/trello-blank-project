@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
   EyeIcon,
   EyeSlashIcon,
@@ -20,19 +20,32 @@ interface FormTypes {
 }
 
 export const Login: FC = () => {
-  const { control, handleSubmit, formState:{isSubmitting} } = useForm<FormTypes>();
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<FormTypes>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
   const [showPassword, setShowPassword] = useState(false);
   const { success, error } = useToast()
   
+
+  const navigate = useNavigate();
 
   const login = async (data: FormTypes) => {
     const response = await apiService.post<{token:string}>({
       url: "/v1/auth/login",
       dto: data
     })
-    if (response.statusCode === 201) {
-      success(response.message)
+    if (response.statusCode === 201 || response.statusCode === 200) {
+      success(response.message || "Successfully logged in")
       tokenStorage.setValue(response.data.token)
+      apiService.saveBearerToken(response.data.token)
+      navigate({to: "/"})
     }
     else {
       error(response.message)

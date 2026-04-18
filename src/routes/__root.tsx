@@ -8,6 +8,7 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import { ToastContainer } from "@/components/ui/ToastContainer";
 import { Header } from "@/components/Header";
 import { tokenStorage } from "@/services/storageService";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const AUTH_ROUTES = ["/auth", "/register", "/auth/register"]
 
@@ -16,11 +17,13 @@ const RootComponent = () => {
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
 
   return (
-    <ToastProvider>
-      {!isAuthRoute && <Header /> }
-      <Outlet />
-      <ToastContainer />
-    </ToastProvider>
+    <AuthProvider>
+      <ToastProvider>
+        {!isAuthRoute && <Header /> }
+        <Outlet />
+        <ToastContainer />
+      </ToastProvider>
+    </AuthProvider>
   )
 }
 

@@ -2,11 +2,13 @@ import { FC, useState } from "react";
 import { Input } from "./ui/input";
 import { ImageBrokenIcon, MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { Button } from "./ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface HeaderProps {}
 
 export const Header: FC<HeaderProps> = () => {
   const [searchValue, setSearchValue] = useState<string>("");
+  const { user, isLoading } = useAuth();
 
   const handleSearch = () => {
     console.log(searchValue);
@@ -31,12 +33,18 @@ export const Header: FC<HeaderProps> = () => {
           <Button onClick={handleSearch}>Search</Button>
         </div>
         <div className="flex gap-2 items-center">
-          <div className="w-12 h-12 rounded-full bg-white flex justify-center items-center">
-            <ImageBrokenIcon className="text-background" weight="duotone" />
+          <div className="w-12 h-12 flex-shrink-0 rounded-full bg-white flex justify-center items-center font-bold text-background text-xl uppercase">
+            {isLoading ? (
+              <ImageBrokenIcon className="text-background" weight="duotone" />
+            ) : user ? (
+              user.username.charAt(0)
+            ) : (
+              <ImageBrokenIcon className="text-background" weight="duotone" />
+            )}
           </div>
           <div>
-            <h3>Username</h3>
-            <p className="text-muted-foreground">useremail@test.com</p>
+            <h3>{isLoading ? "Loading..." : user?.username || "Guest"}</h3>
+            <p className="text-muted-foreground">{isLoading ? "---" : user?.email || ""}</p>
           </div>
         </div>
       </div>
