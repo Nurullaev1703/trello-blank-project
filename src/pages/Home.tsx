@@ -4,31 +4,41 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useCreateProject, useProjects, Project } from "@/services/projectService";
-import { FolderPlusIcon, ProjectorScreenIcon, WarningCircleIcon, SpinnerGapIcon } from "@phosphor-icons/react";
+import {
+  FolderPlusIcon,
+  ProjectorScreenIcon,
+  WarningCircleIcon,
+  SpinnerGapIcon,
+  UsersThreeIcon,
+} from "@phosphor-icons/react";
 import { CustomModal } from "@/components/ui/custom-modal";
+import { MembersModal } from "@/components/MembersModal";
 
 interface CreateProjectForm {
   name: string;
 }
 
 export const Home: FC = () => {
+  // ── Create project ────────────────────────────────────────────
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { control, handleSubmit, reset } = useForm<CreateProjectForm>({
-    defaultValues: {
-      name: "",
-    },
+    defaultValues: { name: "" },
   });
   const { success, error } = useToast();
-  
   const { mutate: createProject, isPending: isCreating } = useCreateProject();
-  const { data: projects, isLoading: isProjectsLoading, isError: isProjectsError, error: projectsError } = useProjects();
+  const {
+    data: projects,
+    isLoading: isProjectsLoading,
+    isError: isProjectsError,
+    error: projectsError,
+  } = useProjects();
 
   const onSubmit = (data: CreateProjectForm) => {
     createProject(data, {
       onSuccess: () => {
         success("Project created successfully!");
-        reset(); // Clear the form
-        setIsModalOpen(false); // Close the modal
+        reset();
+        setIsModalOpen(false);
       },
       onError: (err: any) => {
         error(err.message || "Failed to create project");
@@ -41,8 +51,23 @@ export const Home: FC = () => {
     setIsModalOpen(true);
   };
 
+  // ── Members modal ─────────────────────────────────────────────
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
+
+  const handleOpenMembers = (project: Project) => {
+    setSelectedProject(project);
+    setIsMembersModalOpen(true);
+  };
+
+  const handleCloseMembers = () => {
+    setIsMembersModalOpen(false);
+    setSelectedProject(null);
+  };
+
   return (
     <div className="container mx-auto py-8 px-4 h-full">
+      {/* ── Header ──────────────────────────────────────────────── */}
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
@@ -59,6 +84,7 @@ export const Home: FC = () => {
         </Button>
       </div>
 
+      {/* ── Content ─────────────────────────────────────────────── */}
       {isProjectsLoading ? (
         <div className="flex flex-col items-center justify-center py-20 text-muted-foreground">
           <div className="animate-spin mb-4 text-primary">
@@ -88,19 +114,30 @@ export const Home: FC = () => {
           {projects?.map((project: Project) => (
             <div
               key={project.id}
-              className="group p-6 rounded-2xl bg-white/10 border border-white/20 hover:border-primary/50 transition-all duration-300 shadow-lg hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer flex flex-col"
+              className="group p-6 rounded-2xl bg-white/10 border border-white/20 hover:border-primary/50 transition-all duration-300 shadow-lg hover:shadow-primary/20 hover:-translate-y-1 flex flex-col"
             >
               <h3 className="font-bold text-lg mb-2 truncate">{project.name}</h3>
+
               <div className="mt-auto pt-4 border-t border-white/10 flex justify-between items-center">
-                <span className="text-xs text-muted-foreground font-medium">ID: {project.id.slice(0, 8)}...</span>
-                <span className="text-xs font-bold px-2 py-1 bg-white/10 rounded">Active</span>
+                <span className="text-xs text-muted-foreground font-medium">
+                  ID: {project.id.slice(0, 8)}...
+                </span>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => handleOpenMembers(project)}
+                  className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground"
+                >
+                  <UsersThreeIcon size={15} weight="bold" />
+                  Members
+                </Button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Project Creation Modal */}
+      {/* ── Create Project Modal ─────────────────────────────────── */}
       <CustomModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -145,6 +182,17 @@ export const Home: FC = () => {
           </div>
         </form>
       </CustomModal>
+
+      {/* ── Members Modal ────────────────────────────────────────── */}
+      {selectedProject && (
+        <MembersModal
+          isOpen={isMembersModalOpen}
+          onClose={handleCloseMembers}
+          projectId={selectedProject.id}
+          projectName={selectedProject.name}
+        />
+      )}
     </div>
   );
 };
+
