@@ -1,4 +1,3 @@
-import { UpdateProjectDto } from './dto/update-project.dto';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -97,82 +96,60 @@ export class ProjectsService {
   }
 
   async addedUserToProject(
-    projectId:string,
-    tokenData:TokenData,
-    dto: AddedUserToProjectDTO
-  ){
-    const user = await this.rolesProjectRepository.findOne({
-      where:{
-        user:{
-          id: tokenData.id
-        },
-        project:{
-          id: projectId
-        }
-      }
-    })
+    projectId: string,
+    tokenData: TokenData,
+    dto: AddedUserToProjectDTO,
+  ) {
+    const userRole = await this.rolesProjectRepository.findOne({
+      where: {
+        user: { id: tokenData.id },
+        project: { id: projectId },
+      },
+    });
 
-    if(user.role !== RolesProject.admin){
+    if (!userRole || userRole.role !== RolesProject.admin) {
       throw new HttpException(
-        "Insufficient permissions to add members to this project",
-        HttpStatus.CONFLICT
-      )
+        'Insufficient permissions to add members to this project',
+        HttpStatus.FORBIDDEN,
+      );
     }
 
     const member = await this.userRepository.findOne({
-      where:{
-        username: dto.username
-      }
-    })
+      where: { username: dto.username },
+    });
+
+    if (!member) {
+      throw new HttpException(
+        `User "${dto.username}" not found`,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const alreadyMember = await this.rolesProjectRepository.findOne({
+      where: {
+        user: { id: member.id },
+        project: { id: projectId },
+      },
+    });
+
+    if (alreadyMember) {
+      throw new HttpException(
+        `User "${dto.username}" is already a member of this project`,
+        HttpStatus.CONFLICT,
+      );
+    }
 
     const project = await this.projectRepository.findOne({
-      where:{
-        id:projectId
-      }
-    })
+      where: { id: projectId },
+    });
 
     await this.rolesProjectRepository.save({
-      role: dto.role || RolesProject.worker,
+      role: dto.role ?? RolesProject.worker,
       user: member,
-      project: project
-    })
+      project,
+    });
 
-    return `User ${dto.username} added successfully`
-  }
-  async update(projectId:string, updateProjectDto:UpdateProjectDto){
-    if(updateProjectDto.name){
-      await this.projectRepository.save({
-        id: projectId,
-        name: updateProjectDto.name
-      })
-    }
-
-    for(const userName of updateProjectDto.users){
-      const user = await this.userRepository.findOne({
-        where:{
-          username:userName
-        }
-      })
-
-      const checkUserCreated = await this.rolesProjectRepository.findOne({
-        where:{
-          user:{
-            id:user.id
-          },
-          project:{
-            id: projectId
-          }
-        }
-      })
-      if (checkUserCreated) continue
-
-      await this.rolesProjectRepository.save({
-        user: {id:user.id},
-        project: {id:projectId},
-        role: RolesProject.worker
-      })
-    }
-
-    return "Project updated"
+    return `User ${dto.username} added successfully`;
   }
 }
+

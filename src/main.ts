@@ -25,9 +25,7 @@ async function bootstrap() {
     .setDescription('The Trello server API description. This API provides endpoints for managing projects, tasks, users, and authentication.')
     .setVersion('1.1')
     .addTag('Authentication', 'Endpoints for user login and registration')
-    .addTag('Users', 'Operations related to user management')
-    .addTag('Projects', 'Operations related to project management')
-    .addTag('Tasks', 'Operations related to task management')
+    .addTag('Projects', 'Operations related to project and task management')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

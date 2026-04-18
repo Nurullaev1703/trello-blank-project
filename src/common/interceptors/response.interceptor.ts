@@ -8,27 +8,38 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export interface Response<T> {
+export interface StandardResponse<T> {
   statusCode: number;
   message: string;
-  data: T;
+  data: T | null;
 }
 
 @Injectable()
-export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
+export class ResponseInterceptor<T>
+  implements NestInterceptor<T, StandardResponse<T>>
+{
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<Response<T>> {
+  ): Observable<StandardResponse<T>> {
+    const httpResponse = context.switchToHttp().getResponse();
+
     return next.handle().pipe(
       map((data) => {
-        const message = typeof data === 'string' ? data : data?.message || 'Success';
-        const resultData = data?.data !== undefined ? data.data : (data?.message ? (Object.keys(data).length > 1 ? (({message: _m, ...rest}) => rest)(data) : null) : data);
-        
+        // If the service returned a plain string — treat it as a status message
+        if (typeof data === 'string') {
+          return {
+            statusCode: httpResponse.statusCode || HttpStatus.OK,
+            message: data,
+            data: null,
+          };
+        }
+
+        // Otherwise wrap the whole payload in data
         return {
-          statusCode: context.switchToHttp().getResponse().statusCode || HttpStatus.OK,
-          message: message,
-          data: resultData === data && typeof data === 'string' ? null : resultData,
+          statusCode: httpResponse.statusCode || HttpStatus.OK,
+          message: 'Success',
+          data: data ?? null,
         };
       }),
     );

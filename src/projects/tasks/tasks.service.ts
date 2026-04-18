@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CreateTaskDto } from '../dto/create-task.dto';
-import { GetTasksFilterDto } from '../dto/get-tasks-filter.dto';
-import { UpdateTaskDto } from '../dto/update-task.dto';
+import { UpdateTaskStatusDto } from '../dto/update-task-status.dto';
 import { Project } from '../entities/project.entity';
 import { Task, TaskStatus } from '../entities/task.entity';
 
@@ -22,63 +21,47 @@ export class TasksService {
   async create(tokenData: TokenData, createTaskDto: CreateTaskDto) {
     const task = new Task(createTaskDto);
 
+    // If a specific assignee is provided — find them, otherwise assign to the requester
     task.user = await this.userRepository.findOne(
-      createTaskDto.username 
-      ? {
-        where:{
-          username: createTaskDto.username
-        }
-      }
-      : {
-        where:{
-          id: tokenData.id
-        }
-      }
-    )
+      createTaskDto.username
+        ? { where: { username: createTaskDto.username } }
+        : { where: { id: tokenData.id } },
+    );
 
     task.project = await this.projectRepository.findOne({
       where: { id: createTaskDto.projectId },
     });
 
-    await this.taskRepository.save({...task, status: TaskStatus.create})
+    await this.taskRepository.save({ ...task, status: TaskStatus.create });
 
-    return 'Task added to project';
+    return 'Task created';
   }
 
-  async findAll(filters: GetTasksFilterDto, tokenData?: TokenData) {
-    let where:FindOptionsWhere<Task> = {}
-
-    if(filters.username || tokenData){
-      where = {...where, user: tokenData ? {id:tokenData.id} : {username: filters.username}}
-    }
-
-    if(filters.projectId){
-      where = {...where, project:{ id: filters.projectId}}
-    }
-
+  async findByProject(projectId: string) {
     return this.taskRepository.find({
-      relations:{
-        project: true,
+      where: { project: { id: projectId } },
+      relations: {
+        user: true,    // must be true to JOIN and select user fields
+        project: false,
       },
-      select:{
-        user:{
-          username:true,
-          firstName:true,
-          lastName:true
-        }
+      select: {
+        id: true,
+        title: true,
+        startDate: true,
+        endDate: true,
+        status: true,
+        user: {
+          username: true,
+          firstName: true,
+          lastName: true,
+        },
       },
-      where
-    })
+    });
   }
 
-  async update(id: string, updateTaskDto: UpdateTaskDto) {
-    const task = new Task(updateTaskDto);
-    await this.taskRepository.save({ id, ...task });
-    return 'Task updated';
-  }
-
-  async remove(id: string) {
-    await this.taskRepository.delete({ id });
-    return 'Task deleted';
+  async updateStatus(taskId: string, dto: UpdateTaskStatusDto) {
+    await this.taskRepository.update({ id: taskId }, { status: dto.status });
+    return 'Task status updated';
   }
 }
+
